@@ -25,10 +25,17 @@ class PlayState extends FlxState
 	public var exit:FlxSprite = null;
 	
 	public var timeText:FlxText = null;
+	
 	public var timeValueText:FlxText = null;
-	private var time:Float = 200;
+	
+	private var time:Float = 60;
+	
 	private var recipeText:FlxText = null;
+	
 	var showExit:Bool = false;
+	
+	private var playerHealt:FlxText = null;
+	
 	override public function create():Void
 	{
 		FlxG.mouse.visible = false;
@@ -82,14 +89,18 @@ class PlayState extends FlxState
 		recipeText.setFormat(null, 8, FlxColor.WHITE, "center");
 		recipeText.scrollFactor.set(0, 0);
 		add(recipeText);
-			
+		
+		playerHealt = new FlxText(5, 1, -1, "Health: " + player.health);
+		playerHealt.setFormat(null, 8, FlxColor.WHITE, "center");
+		playerHealt.scrollFactor.set(0, 0);
+		add(playerHealt);
 		//trace(list.toString());
 	}
 	
 	function checkPlayerPosition(enemy:Enemy):Void
 	{
-		if(FlxMath.distanceBetween(enemy,player) < 20){
-			FlxVelocity.moveTowardsObject(enemy, player, 10);
+		if(FlxMath.distanceToPoint(enemy,player.getMidpoint()) < 50){
+			FlxVelocity.moveTowardsObject(enemy, player, 65);
 		}
 	}
 	
@@ -105,7 +116,7 @@ class PlayState extends FlxState
 			player.moveToNextTile = false;
 		}
 		
-	FlxG.
+		FlxG.collide(enemies, _level.foregroundTiles);
 		
 		FlxG.overlap(player, items, OnItemOverlap);
 		FlxG.overlap(player, enemies, OnEnemyOverlap);
@@ -117,6 +128,9 @@ class PlayState extends FlxState
 		
 		timeValueText.text = Std.string(Std.int(time));
 		recipeText.text = "recipe: " + list.toString();
+		playerHealt.text = "Health: " + player.health;
+		
+		exit.visible = list.length == 0 ;
 	}
 	
 	private var counter:Float = 0;

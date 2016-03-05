@@ -55,7 +55,10 @@ class Player extends FlxSprite
 	private var _items:FlxGroup;
 	
 	private var _aura:FlxSprite;
+	
 	var attackingTime:Float = 2;
+	
+	var cooldown:Float = 2;
 	
 	public function new(X:Int, Y:Int)
 	{
@@ -77,6 +80,8 @@ class Player extends FlxSprite
 		#end
 		
 		_items = new FlxGroup();
+		
+		health = 100;
 	}
 	
 	override public function update(elapsed:Float):Void
@@ -148,6 +153,8 @@ class Player extends FlxSprite
 		#end
 		
 		attackingTime += elapsed;
+		cooldown += elapsed;
+		
 		_aura.x = x - 5;
 		_aura.y = y - 5;
 		
@@ -170,10 +177,18 @@ class Player extends FlxSprite
 	
 	public function takeDamage(damage:Int):Void 
 	{
-		health -= damage;
+		trace("player is being attacked");
+		trace("current health: " + health);
 		
-		if (health <= 0){
-			isDead = true;
+		if(cooldown > 2){
+			health -= damage;
+			FlxG.camera.flash(FlxColor.RED, 0.1);
+			if (health <= 0){
+				isDead = true;
+				FlxG.camera.shake();
+			}
+			
+			cooldown = 0;
 		}
 	}
 	

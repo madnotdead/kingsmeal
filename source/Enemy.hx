@@ -50,6 +50,8 @@ class Enemy extends FlxSprite
 		makeGraphic(TILE_SIZE, TILE_SIZE, color);
 		
 		enemyType = eEnemyType;
+		
+		health = 100;
 	}
 
 	override public function update(elapsed:Float):Void 
@@ -68,12 +70,14 @@ class Enemy extends FlxSprite
 			
 		}
 		
-		if (cooldown <= 0)
+		if (cooldown <= 2)
 			cooldown += elapsed;
 	}
 	
 	public function takeDamage():Void
 	{
+		trace("takeDamege");
+		trace("enemy health: " + health);
 		if(cooldown >= 2){
 			health -= 50;
 			
@@ -82,5 +86,14 @@ class Enemy extends FlxSprite
 			
 			cooldown = 0;
 		}
+	}
+	
+	private function wander():Void{
+		
+		//if(!isWandering){
+			//
+		//}else{
+			//
+		//}
 	}
 }

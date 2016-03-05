@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="40" height="30" tilewidth="16" tileheight="16" nextobjectid="18">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="40" height="30" tilewidth="16" tileheight="16" nextobjectid="19">
  <tileset firstgid="1" name="level" tilewidth="16" tileheight="16" tilecount="6" columns="6">
   <image source="../../../i-g-ja/king's meal/assets/data/tilesheet.png" width="96" height="16"/>
  </tileset>
@@ -76,5 +76,10 @@
   <object id="14" name="pimienta" type="receta" x="614" y="1" width="16" height="16"/>
   <object id="15" name="pimienta" type="receta" x="507" y="27" width="16" height="16"/>
   <object id="16" name="ajo" type="receta" x="399" y="32" width="16" height="16"/>
+  <object id="18" name="merodeador" type="enemies" x="560" y="400" width="16" height="16">
+   <properties>
+    <property name="enemyType" value="0"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>
