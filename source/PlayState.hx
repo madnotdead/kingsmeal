@@ -1,10 +1,14 @@
 package;
 
+import flash.desktop.ClipboardFormats;
 import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.group.FlxGroup.FlxTypedGroup;
+import flixel.math.FlxMath;
+import flixel.math.FlxVector;
+import flixel.math.FlxVelocity;
 import flixel.text.FlxText;
 import flixel.util.FlxColor;
 class PlayState extends FlxState
@@ -22,7 +26,9 @@ class PlayState extends FlxState
 	
 	public var timeText:FlxText = null;
 	public var timeValueText:FlxText = null;
-	
+	private var time:Float = 200;
+	private var recipeText:FlxText = null;
+	var showExit:Bool = false;
 	override public function create():Void
 	{
 		FlxG.mouse.visible = false;
@@ -44,7 +50,8 @@ class PlayState extends FlxState
 		
 		add(items);
 		add(enemies);
-	
+		add(exit);
+		
 		FlxG.camera.zoom = 2;
 		FlxG.camera.follow(player, FlxCameraFollowStyle.TOPDOWN_TIGHT);
 		
@@ -59,23 +66,31 @@ class PlayState extends FlxState
 		#end
 		
 				//timeText = new FlxText(offSetX + 250, offSetY + 28, -1, "Time");
-		timeText = new FlxText( 265,  1, -1, "Time");
-		timeText.setFormat(null, 10, FlxColor.WHITE, "center");
+		timeText = new FlxText( 255,  1, -1, "Time");
+		timeText.setFormat(null, 8, FlxColor.WHITE, "center");
 		timeText.scrollFactor.set(0, 0);
 		add(timeText);
 		
 		//timeValueText = new FlxText(offSetX + 290, offSetY + 28, -1, "0");
-		timeValueText = new FlxText(300, 1, -1, "200");
-		timeValueText.setFormat(null, 10, FlxColor.WHITE, "center");
+		timeValueText = new FlxText(290, 1, -1, "200");
+		timeValueText.setFormat(null, 8, FlxColor.WHITE, "center");
 		timeValueText.scrollFactor.set(0, 0);
 		add(timeValueText);
 		
-		list.push("pimienta");
-		list.push("pimienta");
-		list.push("pimienta");
-		list.push("pimienta");
-		list.push("ajo");
-		
+				//timeValueText = new FlxText(offSetX + 290, offSetY + 28, -1, "0");
+		recipeText = new FlxText(5, FlxG.height - 20 , -1, "recipe: " + list.toString());
+		recipeText.setFormat(null, 8, FlxColor.WHITE, "center");
+		recipeText.scrollFactor.set(0, 0);
+		add(recipeText);
+			
+		//trace(list.toString());
+	}
+	
+	function checkPlayerPosition(enemy:Enemy):Void
+	{
+		if(FlxMath.distanceBetween(enemy,player) < 20){
+			FlxVelocity.moveTowardsObject(enemy, player, 10);
+		}
 	}
 	
 	override public function update(elapsed:Float):Void
@@ -90,8 +105,28 @@ class PlayState extends FlxState
 			player.moveToNextTile = false;
 		}
 		
+	FlxG.
+		
 		FlxG.overlap(player, items, OnItemOverlap);
 		FlxG.overlap(player, enemies, OnEnemyOverlap);
+		FlxG.overlap(player, exit, OnExitOverlap);
+		
+		enemies.forEach(checkPlayerPosition);
+		
+		time -= FlxG.elapsed;
+		
+		timeValueText.text = Std.string(Std.int(time));
+		recipeText.text = "recipe: " + list.toString();
+	}
+	
+	private var counter:Float = 0;
+	public function OnExitOverlap(player:Player,exit:FlxSprite):Void
+	{
+		counter += FlxG.elapsed;
+		
+		if (counter > 1.5){
+			//siguiente nivel
+		}
 	}
 	
 	override public function destroy():Void
@@ -110,6 +145,12 @@ class PlayState extends FlxState
 			player.collect(item);
 			item.kill();
 			list.remove(item.name);
+			
+			if (list.length == 0){
+				recipeText.visible = false;
+				exit.visible = true;
+			}
+			
 		}
 	}
 	

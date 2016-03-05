@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="40" height="30" tilewidth="16" tileheight="16" nextobjectid="12">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="40" height="30" tilewidth="16" tileheight="16" nextobjectid="18">
  <tileset firstgid="1" name="level" tilewidth="16" tileheight="16" tilecount="6" columns="6">
-  <image source="tilesheet.png" width="96" height="16"/>
+  <image source="../../../i-g-ja/king's meal/assets/data/tilesheet.png" width="96" height="16"/>
  </tileset>
  <layer name="Background" width="40" height="30">
   <properties>
@@ -69,5 +69,12 @@
  </objectgroup>
  <objectgroup color="#00557f" name="exit">
   <object id="11" name="exit" type="exit" x="576" y="432" width="16" height="16"/>
+ </objectgroup>
+ <objectgroup color="#aaff00" name="receta">
+  <object id="12" name="pimienta" type="receta" x="380" y="31" width="16" height="16"/>
+  <object id="13" name="pimienta" type="receta" x="381" y="32" width="16" height="16"/>
+  <object id="14" name="pimienta" type="receta" x="614" y="1" width="16" height="16"/>
+  <object id="15" name="pimienta" type="receta" x="507" y="27" width="16" height="16"/>
+  <object id="16" name="ajo" type="receta" x="399" y="32" width="16" height="16"/>
  </objectgroup>
 </map>

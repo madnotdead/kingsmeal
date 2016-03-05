@@ -8,8 +8,10 @@ import flixel.addons.editors.tiled.TiledTileLayer;
 import flixel.addons.editors.tiled.TiledTileSet;
 import flixel.FlxG;
 import flixel.FlxObject;
+import flixel.FlxSprite;
 import flixel.group.FlxGroup;
 import flixel.tile.FlxTilemap;
+import flixel.util.FlxColor;
 import haxe.io.Path;
 
 /**
@@ -124,6 +126,10 @@ class TiledLevel extends TiledMap
 				var itemName = Std.parseInt(o.properties.get("itemName"));
 				var item = new Item(x, y,o.name);
 				state.items.add(item);
+			case "receta":
+				state.list.push(o.name);
+			case "exit":
+				state.exit = new FlxSprite(x, y).makeGraphic(18, 22, FlxColor.BROWN);				
 		}
 	}
 	
