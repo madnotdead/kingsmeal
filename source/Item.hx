@@ -12,11 +12,15 @@ class Item extends FlxSprite
 {
 	public var name:String = "";
 	
-	public function new(?X:Float=0, ?Y:Float=0, itemName:String) 
+	public function new(?X:Float=0, ?Y:Float=0, itemName:String, itemType:Int) 
 	{
 		super(X, Y);
-		makeGraphic(16, 16, FlxColor.CYAN);
 		name = itemName;
+		
+		loadGraphic("assets/images/items.png", true, 16, 16);
+		
+		animation.add("idle", [itemType]);
+		animation.play("idle");
 	}
 	
 }

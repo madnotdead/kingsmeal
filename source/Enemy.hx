@@ -11,6 +11,7 @@ enum EnemyType{
 	PERSEGUIDOR;
 }
 	
+
 /**
  * ...
  * @author ...
@@ -25,7 +26,8 @@ class Enemy extends FlxSprite
 	//private var health:Int = 100;
 	private var cooldown:Float = 1;
 	private var timeCounter:Float = 0;
-	public function new(?X:Float=0, ?Y:Float=0,?eEnemyType:Int) 
+	
+	public function new(?X:Float = 0, ?Y:Float = 0, ?eEnemyType:Int) 
 	{
 		super(X, Y);
 		
@@ -34,24 +36,35 @@ class Enemy extends FlxSprite
 		switch (eEnemyType) 
 		{
 			case 0:
-				color = FlxColor.MAGENTA;
+				loadGraphic("assets/images/rocky.png", true, 16, 16);
+				animation.add("idle", [0]);
+				animation.add("walk", [1, 2]);
+				animation.add("attack", [3, 4]);
 				attackValue = 10;
 			case 1:
-				color = FlxColor.LIME;
+				loadGraphic("assets/images/fire.png", true, 16, 16);
+				animation.add("idle", [0]);
+				animation.add("walk", [1, 2]);
+				animation.add("attack", [3, 4]);
 				attackValue = 20;
-			case 3:
-				color = FlxColor.PURPLE;
+			case 2:
+				loadGraphic("assets/images/dark.png", true, 16, 16);
+				animation.add("idle", [0]);
+				animation.add("walk", [1, 2]);
+				animation.add("attack", [3, 4]);
 				attackValue = 40;
-			default:
-				color = FlxColor.BLACK;
+			//default:
+				//color = FlxColor.BLACK;
 		}
 		//eEnemyType == 1 ? color = FlxColor.MAGENTA : color = FlxColor.PURPLE);
 		
-		makeGraphic(TILE_SIZE, TILE_SIZE, color);
+		//makeGraphic(TILE_SIZE, TILE_SIZE, color);
 		
 		enemyType = eEnemyType;
 		
 		health = 100;
+		
+		animation.play("idle");
 	}
 
 	override public function update(elapsed:Float):Void 
@@ -86,6 +99,16 @@ class Enemy extends FlxSprite
 			
 			cooldown = 0;
 		}
+	}
+	
+	public function attack():Void
+	{
+		animation.play("attack");
+	}
+	
+	public function walk():Void
+	{
+		animation.play("walk");
 	}
 	
 	private function wander():Void{

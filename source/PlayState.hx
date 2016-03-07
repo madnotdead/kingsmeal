@@ -5,6 +5,7 @@ import flixel.FlxCamera;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.addons.display.FlxZoomCamera;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 import flixel.math.FlxVector;
@@ -34,17 +35,19 @@ class PlayState extends FlxState
 	
 	var showExit:Bool = false;
 	
-	private var playerHealt:FlxText = null;
+	private var playerHealth:FlxText = null;
 	
 	override public function create():Void
 	{
-		FlxG.mouse.visible = false;
+		#if !mobile
+			FlxG.mouse.visible = false;
+		#end
 		bgColor = 0xFF18A068;
 		items =  new FlxTypedGroup<Item> ();
 		enemies =  new FlxTypedGroup<Enemy> ();
 
 		// Load the level's tilemaps
-		_level = new TiledLevel("assets/data/map.tmx");
+		_level = new TiledLevel(Reg.levels[Reg.level]);
 		
 		// Add tilemaps
 		add(_level.backgroundTiles);
@@ -59,11 +62,11 @@ class PlayState extends FlxState
 		add(enemies);
 		add(exit);
 		
-		FlxG.camera.zoom = 2;
-		FlxG.camera.follow(player, FlxCameraFollowStyle.TOPDOWN_TIGHT);
 		
+		FlxG.camera.follow(player, FlxCameraFollowStyle.TOPDOWN,1);
 		
 		#if !mobile
+			
 		// Set and create Txt Howto
 		_howto = new FlxText(0, 225, FlxG.width);
 		_howto.alignment = CENTER;
@@ -88,19 +91,30 @@ class PlayState extends FlxState
 		recipeText = new FlxText(5, FlxG.height - 20 , -1, "recipe: " + list.toString());
 		recipeText.setFormat(null, 8, FlxColor.WHITE, "center");
 		recipeText.scrollFactor.set(0, 0);
+		recipeText.setBorderStyle(OUTLINE_FAST, FlxColor.GRAY, 2);
 		add(recipeText);
 		
-		playerHealt = new FlxText(5, 1, -1, "Health: " + player.health);
-		playerHealt.setFormat(null, 8, FlxColor.WHITE, "center");
-		playerHealt.scrollFactor.set(0, 0);
-		add(playerHealt);
+		playerHealth = new FlxText(5, 1, -1, "Health: " + player.health);
+		playerHealth.setFormat(null, 8, FlxColor.WHITE, "center");
+		playerHealth.scrollFactor.set(0, 0);
+		add(playerHealth);
 		//trace(list.toString());
+		
+		add(player);
+		time = time * (Reg.level + 1);
 	}
 	
 	function checkPlayerPosition(enemy:Enemy):Void
 	{
-		if(FlxMath.distanceToPoint(enemy,player.getMidpoint()) < 50){
-			FlxVelocity.moveTowardsObject(enemy, player, 65);
+		if (FlxMath.distanceToPoint(enemy, player.getMidpoint()) < 50) {
+		
+			if (FlxMath.distanceToPoint(enemy, player.getMidpoint()) <=10)
+				enemy.attack();
+			else{
+				FlxVelocity.moveTowardsObject(enemy, player, 65);
+				enemy.walk();
+			}
+			
 		}
 	}
 	
@@ -127,19 +141,31 @@ class PlayState extends FlxState
 		time -= FlxG.elapsed;
 		
 		timeValueText.text = Std.string(Std.int(time));
-		recipeText.text = "recipe: " + list.toString();
-		playerHealt.text = "Health: " + player.health;
+		list.length > 0 ? recipeText.text = "recipe: " + list.toString() : recipeText.text = "find the portal";
+		playerHealth.text = "Health: " + player.health;
 		
-		exit.visible = list.length == 0 ;
+		exit.visible = exit.active = list.length == 0 ;
+		
+		if (player.isDead || time <= 0)
+			FlxG.resetState();
+			
+		enemyCooldown += elapsed;
 	}
 	
 	private var counter:Float = 0;
 	public function OnExitOverlap(player:Player,exit:FlxSprite):Void
 	{
+		if (!exit.active)
+			return;
+			
 		counter += FlxG.elapsed;
 		
-		if (counter > 1.5){
-			//siguiente nivel
+		if (counter > 0.5){
+			Reg.level++;
+			if (Reg.level < Reg.levels.length)
+				FlxG.switchState(new PlayState());
+			else
+				FlxG.resetGame();
 		}
 	}
 	
@@ -161,18 +187,24 @@ class PlayState extends FlxState
 			list.remove(item.name);
 			
 			if (list.length == 0){
-				recipeText.visible = false;
+				recipeText.text = "find the portal";
 				exit.visible = true;
 			}
 			
 		}
 	}
 	
+	private var enemyCooldown:Float = 1.5;
 	private function OnEnemyOverlap(player:Player,enemy:Enemy){
 		
-		player.takeDamage(enemy.attackValue);
-		
-		if (player.atacking)
-			enemy.takeDamage();
+		if (enemyCooldown >= 1.5)
+		{
+			player.takeDamage(enemy.attackValue);
+			
+			if (player.atacking)
+				enemy.takeDamage();
+			
+			enemyCooldown = 0;
+		}
 	}
 }

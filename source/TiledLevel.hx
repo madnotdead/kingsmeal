@@ -116,7 +116,7 @@ class TiledLevel extends TiledMap
 				// define and set the player 
 				var player = new Player(x, y);
 				state.player = player;
-				state.add(player);
+				//state.add(player);
 			case "enemies":
 				// define and set Enemy player 
 				var enemyType = Std.parseInt(o.properties.get("enemyType"));
@@ -124,12 +124,14 @@ class TiledLevel extends TiledMap
 				state.enemies.add(enemy);
 			case "items":
 				var itemName = Std.parseInt(o.properties.get("itemName"));
-				var item = new Item(x, y,o.name);
-				state.items.add(item);
-			case "receta":
+				var itemType =Std.parseInt(o.properties.get("itemType"));
+				var item = new Item(x, y, o.name, itemType);
 				state.list.push(o.name);
+				state.items.add(item);
+			//case "receta":
+				//state.list.push(o.name);
 			case "exit":
-				state.exit = new FlxSprite(x, y).makeGraphic(18, 22, FlxColor.BROWN);				
+				state.exit = new Exit(x, y);					
 		}
 	}
 	

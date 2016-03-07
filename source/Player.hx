@@ -67,7 +67,11 @@ class Player extends FlxSprite
 		
 		// Make the player graphic.
 		makeGraphic(TILE_SIZE, TILE_SIZE, 0xff2c3d55);
+		loadGraphic("assets/images/player.png", true, TILE_SIZE, TILE_SIZE);
 		
+		animation.add("idle", [0]);
+		animation.add("moving", [0,1,2]);
+
 		_aura = new FlxSprite( X , Y,"assets/images/AURA.png");
 		//_aura.makeGraphic(26, 26, FlxColor.WHITE);
 		_aura.visible = false;
@@ -82,6 +86,7 @@ class Player extends FlxSprite
 		_items = new FlxGroup();
 		
 		health = 100;
+		animation.play("idle");
 	}
 	
 	override public function update(elapsed:Float):Void
@@ -89,6 +94,7 @@ class Player extends FlxSprite
 		super.update(elapsed);  
 		_aura.visible = false;
 		// Move the player to the next block
+		
 		if (moveToNextTile)
 		{
 			switch (moveDirection)
@@ -102,6 +108,7 @@ class Player extends FlxSprite
 				case RIGHT:
 					x += MOVEMENT_SPEED;
 			}
+			animation.play("moving");
 		}
 		
 		// Check if the player has now reached the next block
@@ -157,6 +164,7 @@ class Player extends FlxSprite
 		
 		_aura.x = x - 5;
 		_aura.y = y - 5;
+		animation.play("idle");
 		
 	}
 	
