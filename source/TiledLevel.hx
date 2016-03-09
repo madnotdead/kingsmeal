@@ -37,8 +37,7 @@ class TiledLevel extends TiledMap
 		foregroundTiles = new FlxGroup();
 		backgroundTiles = new FlxGroup();
 		
-		FlxG.camera.setScrollBoundsRect(0, 0, fullWidth, fullHeight, true);
-		
+	
 		// Load Tile Maps
 		for (layer in layers)
 		{
@@ -116,6 +115,7 @@ class TiledLevel extends TiledMap
 				// define and set the player 
 				var player = new Player(x, y);
 				state.player = player;
+				FlxG.camera.follow(player);
 				//state.add(player);
 			case "enemies":
 				// define and set Enemy player 

@@ -17,7 +17,7 @@ class PlayState extends FlxState
 	public var player:Player;
 	private var _level:TiledLevel;
 	private var _howto:FlxText;
-	private var zoomValue:Float = 2.0;
+	private var zoomValue:Float = 2.2;
 	
 	
 	public var items:FlxTypedGroup<Item> = null;
@@ -37,12 +37,17 @@ class PlayState extends FlxState
 	
 	private var playerHealth:FlxText = null;
 	
+	private var hud:Hud = null;
+	
 	override public function create():Void
 	{
 		#if !mobile
 			FlxG.mouse.visible = false;
 		#end
-		bgColor = 0xFF18A068;
+				
+
+		
+		bgColor = FlxColor.RED;
 		items =  new FlxTypedGroup<Item> ();
 		enemies =  new FlxTypedGroup<Enemy> ();
 
@@ -62,11 +67,42 @@ class PlayState extends FlxState
 		add(enemies);
 		add(exit);
 		
+		//FlxG.camera.zoom = 3;
+		////FlxG.camera.width = Std.int(FlxG.camera.width / 3);
+		////FlxG.camera.height = Std.int(FlxG.camera.height / 3);
+		//FlxG.camera.follow(player, FlxCameraFollowStyle.LOCKON, 0);
+//
+		////FlxG.camera = new FlxCamera(0, 0, 640, 480);
+		//////FlxG.camera.width = Std.int(FlxG.width / zoomValue);
+		//////FlxG.camera.height = Std.int(FlxG.height / zoomValue);
+		////FlxG.camera.follow(player);
+		//////FlxG.camera.zoom = 1.5;
+
 		
-		FlxG.camera.follow(player, FlxCameraFollowStyle.TOPDOWN,1);
+		FlxG.camera.follow(player, FlxCameraFollowStyle.TOPDOWN_TIGHT,.5);
+
+				// New zoom value
+		//var zoom = 2;
+		//// Percentage of aforementioned clipped "projection plane real-estate"
+		//var factor = (zoom - 1) / (zoom * 2);
+		//// Differences along X and Y
+		//var dx = FlxG.width * factor;
+		//var dy = FlxG.height * factor;
+		//// The observable slice of the game world (top-left corner position and dimensions)
+		//var worldX = 0;
+		//var worldY = 0;
+		//var worldWidth = FlxG.width;
+		//var worldHeight =  FlxG.height;
+		//// Update zoom
+		//FlxG.camera.zoom = 2;
+		//// Update scroll bounds
+		//FlxG.camera.setScrollBoundsRect(worldX - dx, worldY - dy, worldWidth + dx, worldHeight + dy);
+		
+	//	FlxG.camera.zoom = zoom;
 		
 		#if !mobile
-			
+		
+		setZoom(zoomValue);	
 		// Set and create Txt Howto
 		_howto = new FlxText(0, 225, FlxG.width);
 		_howto.alignment = CENTER;
@@ -102,6 +138,12 @@ class PlayState extends FlxState
 		
 		add(player);
 		time = time * (Reg.level + 1);
+		
+		
+		//hud = new Hud();
+		//_hudCamera = new FlxCamera(0, 0, FlxG.width, FlxG.height,zoomValue);
+		//_hudCamera.follow(hud.background);
+		//FlxG.cameras.add(_hudCamera);
 	}
 	
 	function checkPlayerPosition(enemy:Enemy):Void
@@ -194,10 +236,11 @@ class PlayState extends FlxState
 		}
 	}
 	
-	private var enemyCooldown:Float = 1.5;
+	private var enemyCooldown:Float = 0.7;
+	var _hudCamera:FlxCamera = null;
 	private function OnEnemyOverlap(player:Player,enemy:Enemy){
 		
-		if (enemyCooldown >= 1.5)
+		if (enemyCooldown >= 0.7)
 		{
 			player.takeDamage(enemy.attackValue);
 			
@@ -206,5 +249,63 @@ class PlayState extends FlxState
 			
 			enemyCooldown = 0;
 		}
+	}
+	
+	
+	
+	public function setZoom(zoom:Float):Void
+	{
+		
+		var worldX = 0;
+		var worldY = 0;
+		var worldWidth = FlxG.width;
+		var worldHeight =  FlxG.height;
+		
+		if (zoom < .5) zoom = .5;
+		if (zoom > 4) zoom = 4;
+		
+		zoom = Math.round(zoom * 10) / 10; // corrects float precision problems.
+		
+		FlxG.camera.zoom = zoom;
+		
+		#if TRUE_ZOOM_OUT
+		zoom += 0.5; // For 1/2 zoom out.
+		zoom -= (1 - zoom); // For 1/2 zoom out.
+		#end
+		
+		var zoomDistDiffY;
+		var zoomDistDiffX;
+		
+		
+		if (zoom <= 1) 
+		{
+			zoomDistDiffX = Math.abs((worldX + worldWidth) - (worldX + worldWidth) / 1 + (1 - zoom));
+			zoomDistDiffY = Math.abs((worldY + worldHeight) - (worldY + worldHeight) / 1 + (1 - zoom));
+			#if TRUE_ZOOM_OUT
+			zoomDistDiffX *= 1; // For 1/2 zoom out - otherwise -0.5 
+			zoomDistDiffY *= 1; // For 1/2 zoom out - otherwise -0.5
+			#else
+			zoomDistDiffX *= -.5;
+			zoomDistDiffY *= -.5;
+			#end
+		}
+		else
+		{
+			zoomDistDiffX = Math.abs((worldX + worldWidth) - (worldX + worldWidth) / zoom);
+			zoomDistDiffY = Math.abs((worldY + worldHeight) - (worldY + worldHeight) / zoom);
+			#if TRUE_ZOOM_OUT
+			zoomDistDiffX *= 1; // For 1/2 zoom out - otherwise 0.5
+			zoomDistDiffY *= 1; // For 1/2 zoom out - otherwise 0.5
+			#else
+			zoomDistDiffX *= .5;
+			zoomDistDiffY *= .5;
+			#end
+		}
+		
+		FlxG.camera.setScrollBoundsRect(worldX - zoomDistDiffX, 
+							   worldY - zoomDistDiffY,
+							   (worldWidth + Math.abs(worldX) + zoomDistDiffX * 2),
+							   (worldHeight + Math.abs(worldY) + zoomDistDiffY * 2),
+							   false);
 	}
 }
