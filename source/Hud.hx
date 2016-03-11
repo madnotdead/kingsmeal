@@ -62,7 +62,7 @@ import flixel.util.FlxColor;
 class Hud extends FlxGroup
 {
 	public var width:Int = 200;
-	public var height:Int = 50;
+	public var height:Int = FlxG.height;
 	public var background:FlxSprite;
 	
 	private var timeText:FlxText;
@@ -77,7 +77,7 @@ class Hud extends FlxGroup
 		var x:Int = 10000;
 		
 		background = new FlxSprite(x, 0);
-		background.makeGraphic(width, height, FlxColor.TRANSPARENT);
+		background.makeGraphic(FlxG.width, height, FlxColor.TRANSPARENT);
 		add(background);
 		
 		x += 6;
@@ -85,7 +85,7 @@ class Hud extends FlxGroup
 		
 		timeText = new FlxText(x,  startY, -1, "Time");
 		timeText.setFormat(null, 16, FlxColor.WHITE, "center");
-		//timeText.scrollFactor.set(0, 0);
+		//timeText.scrollFactor.set(0, 0);	
 		add(timeText);
 		
 		timeValueText = new FlxText(x + 55, startY, -1, "200");
@@ -93,11 +93,11 @@ class Hud extends FlxGroup
 		//timeValueText.scrollFactor.set(0, 0);
 		add(timeValueText);
 		//
-		//recipeText = new FlxText(5, FlxG.height - 20 , -1, "recipe: " + list.toString());
-		//recipeText.setFormat(null, 8, FlxColor.WHITE, "center");
+		recipeText = new FlxText(x, FlxG.height - 25 , -1, "recipe: pepermint, garlic");
+		recipeText.setFormat(null, 16, FlxColor.WHITE, "center");
 		//recipeText.scrollFactor.set(0, 0);
-		//recipeText.setBorderStyle(OUTLINE_FAST, FlxColor.GRAY, 2);
-		//add(recipeText);
+		recipeText.setBorderStyle(OUTLINE_FAST, FlxColor.GRAY, 2);
+		add(recipeText);
 		//
 		//playerHealth = new FlxText(x, startY, -1, "Health: ");
 		//playerHealth.setFormat(null, 16, FlxColor.WHITE, "center");

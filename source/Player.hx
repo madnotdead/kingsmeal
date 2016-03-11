@@ -4,6 +4,7 @@ import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.group.FlxGroup;
 import flixel.group.FlxSpriteGroup;
+import flixel.math.FlxPoint;
 import flixel.ui.FlxButton;
 import flixel.ui.FlxVirtualPad;
 import flixel.util.FlxColor;
@@ -80,6 +81,9 @@ class Player extends FlxSprite
 		#if mobile
 		_virtualPad = new FlxVirtualPad(FULL, NONE);
 		_virtualPad.alpha = 0.5;
+		//_virtualPad.scale.set(1.5, 1.5);
+		_virtualPad.camera = PlayState.hudCam;
+		//_virtualPad.updateHitbox();
 		FlxG.state.add(_virtualPad);
 		#end
 		

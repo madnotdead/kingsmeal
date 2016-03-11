@@ -39,7 +39,7 @@ class PlayState extends FlxState
 	
 	private var hud:Hud = null;
 	
-	private var hudCam:FlxCamera = null;
+	public static var hudCam:FlxCamera = null;
 	
 	override public function create():Void
 	{
@@ -72,10 +72,9 @@ class PlayState extends FlxState
 	
 		FlxG.camera.follow(player, FlxCameraFollowStyle.TOPDOWN_TIGHT,.5);
 
-		
+		setZoom(zoomValue);	
 		
 		#if !mobile
-		setZoom(zoomValue);	
 		// Set and create Txt Howto
 		_howto = new FlxText(0, 225, FlxG.width);
 		_howto.alignment = CENTER;
@@ -106,7 +105,8 @@ class PlayState extends FlxState
 		#end
 		hudCam.zoom = 1; // For 1/2 zoom out.
 		hudCam.follow(hud.background, FlxCameraFollowStyle.NO_DEAD_ZONE);
-		hudCam.alpha = .5;
+		///hudCam.alpha = .5;
+		hudCam.bgColor.alpha = 0;
 		FlxG.cameras.add(hudCam);
 	}
 	
