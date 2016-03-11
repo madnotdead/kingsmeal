@@ -39,6 +39,8 @@ class PlayState extends FlxState
 	
 	private var hud:Hud = null;
 	
+	private var hudCam:FlxCamera = null;
+	
 	override public function create():Void
 	{
 		#if !mobile
@@ -47,7 +49,7 @@ class PlayState extends FlxState
 				
 
 		
-		bgColor = FlxColor.RED;
+		//bgColor = FlxColor.RED;
 		items =  new FlxTypedGroup<Item> ();
 		enemies =  new FlxTypedGroup<Enemy> ();
 
@@ -67,41 +69,12 @@ class PlayState extends FlxState
 		add(enemies);
 		add(exit);
 		
-		//FlxG.camera.zoom = 3;
-		////FlxG.camera.width = Std.int(FlxG.camera.width / 3);
-		////FlxG.camera.height = Std.int(FlxG.camera.height / 3);
-		//FlxG.camera.follow(player, FlxCameraFollowStyle.LOCKON, 0);
-//
-		////FlxG.camera = new FlxCamera(0, 0, 640, 480);
-		//////FlxG.camera.width = Std.int(FlxG.width / zoomValue);
-		//////FlxG.camera.height = Std.int(FlxG.height / zoomValue);
-		////FlxG.camera.follow(player);
-		//////FlxG.camera.zoom = 1.5;
-
-		
+	
 		FlxG.camera.follow(player, FlxCameraFollowStyle.TOPDOWN_TIGHT,.5);
 
-				// New zoom value
-		//var zoom = 2;
-		//// Percentage of aforementioned clipped "projection plane real-estate"
-		//var factor = (zoom - 1) / (zoom * 2);
-		//// Differences along X and Y
-		//var dx = FlxG.width * factor;
-		//var dy = FlxG.height * factor;
-		//// The observable slice of the game world (top-left corner position and dimensions)
-		//var worldX = 0;
-		//var worldY = 0;
-		//var worldWidth = FlxG.width;
-		//var worldHeight =  FlxG.height;
-		//// Update zoom
-		//FlxG.camera.zoom = 2;
-		//// Update scroll bounds
-		//FlxG.camera.setScrollBoundsRect(worldX - dx, worldY - dy, worldWidth + dx, worldHeight + dy);
 		
-	//	FlxG.camera.zoom = zoom;
 		
 		#if !mobile
-		
 		setZoom(zoomValue);	
 		// Set and create Txt Howto
 		_howto = new FlxText(0, 225, FlxG.width);
@@ -111,30 +84,7 @@ class PlayState extends FlxState
 		add(_howto);
 		#end
 		
-				//timeText = new FlxText(offSetX + 250, offSetY + 28, -1, "Time");
-		timeText = new FlxText( 255,  1, -1, "Time");
-		timeText.setFormat(null, 8, FlxColor.WHITE, "center");
-		timeText.scrollFactor.set(0, 0);
-		add(timeText);
-		
-		//timeValueText = new FlxText(offSetX + 290, offSetY + 28, -1, "0");
-		timeValueText = new FlxText(290, 1, -1, "200");
-		timeValueText.setFormat(null, 8, FlxColor.WHITE, "center");
-		timeValueText.scrollFactor.set(0, 0);
-		add(timeValueText);
-		
-				//timeValueText = new FlxText(offSetX + 290, offSetY + 28, -1, "0");
-		recipeText = new FlxText(5, FlxG.height - 20 , -1, "recipe: " + list.toString());
-		recipeText.setFormat(null, 8, FlxColor.WHITE, "center");
-		recipeText.scrollFactor.set(0, 0);
-		recipeText.setBorderStyle(OUTLINE_FAST, FlxColor.GRAY, 2);
-		add(recipeText);
-		
-		playerHealth = new FlxText(5, 1, -1, "Health: " + player.health);
-		playerHealth.setFormat(null, 8, FlxColor.WHITE, "center");
-		playerHealth.scrollFactor.set(0, 0);
-		add(playerHealth);
-		//trace(list.toString());
+
 		
 		add(player);
 		time = time * (Reg.level + 1);
@@ -144,6 +94,20 @@ class PlayState extends FlxState
 		//_hudCamera = new FlxCamera(0, 0, FlxG.width, FlxG.height,zoomValue);
 		//_hudCamera.follow(hud.background);
 		//FlxG.cameras.add(_hudCamera);
+		
+		hud = new Hud();
+		add(hud);
+
+		
+		#if TRUE_ZOOM_OUT
+		hudCam = new FlxCamera(440 + 50, 0 + 45, hud.width, hud.height); // +50 + 45 For 1/2 zoom out.
+		#else
+		hudCam = new FlxCamera(0, 0, FlxG.width, hud.height);
+		#end
+		hudCam.zoom = 1; // For 1/2 zoom out.
+		hudCam.follow(hud.background, FlxCameraFollowStyle.NO_DEAD_ZONE);
+		hudCam.alpha = .5;
+		FlxG.cameras.add(hudCam);
 	}
 	
 	function checkPlayerPosition(enemy:Enemy):Void
@@ -182,9 +146,11 @@ class PlayState extends FlxState
 		
 		time -= FlxG.elapsed;
 		
-		timeValueText.text = Std.string(Std.int(time));
-		list.length > 0 ? recipeText.text = "recipe: " + list.toString() : recipeText.text = "find the portal";
-		playerHealth.text = "Health: " + player.health;
+		hud.updateHealth(player.health);
+		hud.updateTime(time);
+		//timeValueText.text = Std.string(Std.int(time));
+		//list.length > 0 ? recipeText.text = "recipe: " + list.toString() : recipeText.text = "find the portal";
+		//playerHealth.text = "Health: " + player.health;
 		
 		exit.visible = exit.active = list.length == 0 ;
 		
@@ -307,5 +273,24 @@ class PlayState extends FlxState
 							   (worldWidth + Math.abs(worldX) + zoomDistDiffX * 2),
 							   (worldHeight + Math.abs(worldY) + zoomDistDiffY * 2),
 							   false);
+	}
+	
+	public function SetZoom1(zoom:Float):Void{
+		// New zoom value
+
+		// Percentage of aforementioned clipped "projection plane real-estate"
+		var factor = (zoom - 1) / (zoom * 2);
+		// Differences along X and Y
+		var dx = FlxG.width * factor;
+		var dy = FlxG.height * factor;
+		// The observable slice of the game world (top-left corner position and dimensions)
+		var worldX = 0;
+		var worldY = 0;
+		var worldWidth = FlxG.width;
+		var worldHeight =  FlxG.height;
+		// Update zoom
+		FlxG.camera.zoom = 2;
+		// Update scroll bounds
+		FlxG.camera.setScrollBoundsRect(worldX - dx, worldY - dy, worldWidth + dx, worldHeight + dy);
 	}
 }

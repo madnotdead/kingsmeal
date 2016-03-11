@@ -15,7 +15,7 @@ class MenuState extends FlxState
 	override public function create():Void
 	{
 		super.create();
-		FlxG.state.bgColor = FlxColor.GREEN;
+		//FlxG.state.bgColor = FlxColor.GREEN;
 		
 		Reg.levels = [];
 		Reg.levels.push("assets/data/map.tmx");
