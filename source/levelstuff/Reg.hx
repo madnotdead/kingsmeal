@@ -1,4 +1,4 @@
-package;
+package levelstuff;
 
 import flixel.input.gamepad.FlxGamepad;
 import flixel.util.FlxSave;

@@ -71,11 +71,6 @@
   <object id="11" name="exit" type="exit" x="576" y="432" width="16" height="16"/>
  </objectgroup>
  <objectgroup color="#aaff00" name="receta">
-  <object id="12" name="pimienta" type="receta" x="380" y="31" width="16" height="16"/>
-  <object id="13" name="pimienta" type="receta" x="381" y="32" width="16" height="16"/>
-  <object id="14" name="pimienta" type="receta" x="591" y="25" width="16" height="16"/>
-  <object id="15" name="pimienta" type="receta" x="507" y="27" width="16" height="16"/>
-  <object id="16" name="ajo" type="receta" x="399" y="32" width="16" height="16"/>
   <object id="18" name="merodeador" type="enemies" x="560" y="400" width="16" height="16">
    <properties>
     <property name="enemyType" value="1"/>

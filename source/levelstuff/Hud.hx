@@ -1,4 +1,4 @@
-//package;
+//package levelstuff;
 //
 //import flixel.FlxG;
 //import flixel.FlxSprite;
@@ -48,7 +48,7 @@
 		//_txtMoney.x = _sprMoney.x - _txtMoney.width - 4;
 	//}
 //}
-package;
+package levelstuff;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -93,28 +93,36 @@ class Hud extends FlxGroup
 		//timeValueText.scrollFactor.set(0, 0);
 		add(timeValueText);
 		//
-		recipeText = new FlxText(x, FlxG.height - 25 , -1, "recipe: pepermint, garlic");
+		recipeText = new FlxText(x, FlxG.height - 35 , -1, "recipe: pepermint, garlic");
+
 		recipeText.setFormat(null, 16, FlxColor.WHITE, "center");
 		//recipeText.scrollFactor.set(0, 0);
 		recipeText.setBorderStyle(OUTLINE_FAST, FlxColor.GRAY, 2);
 		add(recipeText);
 		//
-		//playerHealth = new FlxText(x, startY, -1, "Health: ");
-		//playerHealth.setFormat(null, 16, FlxColor.WHITE, "center");
-		////playerHealth.scrollFactor.set(0, 0);
-		//add(playerHealth);
+		playerHealth = new FlxText(x + FlxG.width - 125, startY, -1, "Health: ");
+		playerHealth.setFormat(null, 16, FlxColor.WHITE, "center");
+		//playerHealth.scrollFactor.set(0, 0);
+		add(playerHealth);
+		
+		trace("finalX: " + x);
 	}
 	
 	public function updateHealth(health:Float):Void{
-		//playerHealth.text =  "Health: " + health;
+		playerHealth.text =  "Health: " + health;
 	}
 	
 	public function updateTime(time:Float) 
 	{
 		timeValueText.text = Std.string(Std.int(time));
 	}
+	
+	public function setRecipe(recipe:String)
+	{
+		recipeText.text = recipe;
+	}
 }
-////package;
+////package levelstuff;
 ////
 ////
 ////import flixel.FlxG;
