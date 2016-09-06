@@ -146,7 +146,7 @@ class PlayState extends FlxState
 		FlxG.collide(enemies, _level.foregroundTiles);
 		
 		FlxG.overlap(player, items, OnItemOverlap);
-		FlxG.overlap(player, enemies, OnEnemyOverlap);
+		FlxG.overlap(player.collisionHolder, enemies, OnEnemyOverlap);
 		FlxG.overlap(player, exit, OnExitOverlap);
 		
 		enemies.forEach(checkPlayerPosition);
@@ -210,7 +210,7 @@ class PlayState extends FlxState
 	
 	private var enemyCooldown:Float = 0.5;
 	var _hudCamera:FlxCamera = null;
-	private function OnEnemyOverlap(player:entities.Player,enemy:entities.Enemy){
+	private function OnEnemyOverlap(holder:FlxSprite,enemy:entities.Enemy){
 		
 		if (enemyCooldown >= 0.5)
 		{

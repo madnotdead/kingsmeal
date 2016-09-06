@@ -61,7 +61,9 @@ class Player extends FlxSprite
 	
 	var cooldown:Float = 2;
 	
-		public function new(X:Int, Y:Int)
+	public var collisionHolder:FlxSprite;
+	
+	public function new(X:Int, Y:Int)
 	{
 		// X,Y: Starting coordinates
 		super(X, Y);
@@ -71,13 +73,23 @@ class Player extends FlxSprite
 		loadGraphic("assets/images/player.png", true, TILE_SIZE, TILE_SIZE);
 		
 		animation.add("idle", [0]);
-		animation.add("moving", [0,1,2]);
-
+		animation.add("moving", [0,1,2],20,true);
+		
+		//width = 16;
+		//height = 24;
+		//updateHitbox();
 		_aura = new FlxSprite( X , Y,"assets/images/AURA.png");
 		//_aura.makeGraphic(26, 26, FlxColor.WHITE);
 		_aura.visible = false;
 		
-		FlxG.state.add(_aura);
+		collisionHolder = new FlxSprite().makeGraphic(7, 14, FlxColor.TRANSPARENT);
+		
+		FlxG.state.add(collisionHolder);
+		//width = 8;
+		//height = 14;
+		//offset.set(4, 3);
+		//updateHitbox();
+		//FlxG.state.add(_aura);
 		#if mobile
 		_virtualPad = new FlxVirtualPad(FULL, NONE);
 		_virtualPad.alpha = 0.5;
@@ -90,17 +102,19 @@ class Player extends FlxSprite
 		_items = new FlxGroup();
 		
 		health = 100;
-		animation.play("idle");
+		//animation.play("idle");
 	}
 	
 	override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);  
-		_aura.visible = false;
+		//_aura.visible = false;
 		// Move the player to the next block
-		
+		//animation.play("idle");
 		if (moveToNextTile)
-		{
+		{			
+			animation.play("moving");
+
 			switch (moveDirection)
 			{
 				case UP:
@@ -109,10 +123,13 @@ class Player extends FlxSprite
 					y += MOVEMENT_SPEED;
 				case LEFT:
 					x -= MOVEMENT_SPEED;
+					flipX = false;
 				case RIGHT:
 					x += MOVEMENT_SPEED;
+					flipX = true;
 			}
-			animation.play("moving");
+		}else{
+			animation.play("idle");
 		}
 		
 		// Check if the player has now reached the next block
@@ -166,14 +183,16 @@ class Player extends FlxSprite
 		attackingTime += elapsed;
 		cooldown += elapsed;
 		
-		_aura.x = x - 5;
-		_aura.y = y - 5;
-		animation.play("idle");
-		
+		collisionHolder.x = x + 5;
+		collisionHolder.y = y +2;
+		//
+		//animation.play("idle");
+
 	}
 	
 	public function moveTo(Direction:MoveDirection):Void
 	{
+		//animation.play("");
 		// Only change direction if not already moving
 		if (!moveToNextTile)
 		{

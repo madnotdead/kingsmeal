@@ -38,20 +38,20 @@ class Enemy extends FlxSprite
 			case 0:
 				loadGraphic("assets/images/rocky.png", true, 16, 16);
 				animation.add("idle", [0]);
-				animation.add("walk", [1, 2]);
-				animation.add("attack", [3, 4]);
+				animation.add("walk", [1, 2],20);
+				animation.add("attack", [3, 4],20);
 				attackValue = 10;
 			case 1:
 				loadGraphic("assets/images/fire.png", true, 16, 16);
 				animation.add("idle", [0]);
-				animation.add("walk", [1, 2]);
-				animation.add("attack", [3, 4]);
+				animation.add("walk", [1, 2],20);
+				animation.add("attack", [3, 4],20);
 				attackValue = 20;
 			case 2:
 				loadGraphic("assets/images/dark.png", true, 16, 16);
 				animation.add("idle", [0]);
-				animation.add("walk", [1, 2]);
-				animation.add("attack", [3, 4]);
+				animation.add("walk", [1, 2],20);
+				animation.add("attack", [3, 4],20);
 				attackValue = 40;
 			//default:
 				//color = FlxColor.BLACK;
